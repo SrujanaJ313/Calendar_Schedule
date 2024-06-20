@@ -19,6 +19,7 @@ function Calendar() {
     endTime: "",
     location: "",
   });
+  const [titleErr,setTitleErr] = useState('');
   const handleEventClick = (info) => {
     const event = info.event;
     const startDateTime = event.start.toISOString().slice(0, 16);
@@ -31,6 +32,7 @@ function Calendar() {
       endTime: endDateTime.split("T")[1],
       location: event.extendedProps.location,
     });
+    setTitleErr('');
     setModalMode("view");
     setShowModal(true);
   };
@@ -45,6 +47,7 @@ function Calendar() {
       endTime: "09:00",
       location: "",
     });
+    setTitleErr('');
     setModalMode("create");
     setShowModal(true);
   };
@@ -54,6 +57,10 @@ function Calendar() {
     setMeetingData((prevData) => ({ ...prevData, [name]: value }));
   };
   const handleSave = () => {
+    if(!meetingData.title.trim()){
+      setTitleErr('Meeting Title is Required')
+      return;
+    }
     const { startDate, startTime, endDate, endTime } = meetingData;
     const formattedStartDateTime = `${startDate}T${startTime}:00`;
     const formattedEndDateTime = `${endDate}T${endTime}:00`;
@@ -127,7 +134,11 @@ function Calendar() {
                 value={meetingData.title}
                 onChange={handleInputChange}
                 readOnly={modalMode === "view"}
+                isInvalid={!!titleErr}
               />
+              <Form.Control.Feedback type="invalid">
+                {titleErr}
+              </Form.Control.Feedback>
             </Form.Group>
             <Row>
               
