@@ -18,14 +18,27 @@ function Calendar() {
     endDate: "",
     endTime: "",
     location: "",
+    requiredEmails: "",
+    optionalEmails: "",
   });
   const [titleErr,setTitleErr] = useState('');
+  const [events, setEvents] = useState([
+    {
+      title: "Srujana Meeting",
+      start: "2024-06-19T08:00:00",
+      end: "2024-06-19T09:00:00",
+      requiredEmails:"S@gmail.com",
+      optionalEmails:"SR@gmail.com"
+    },
+  ]);
   const handleEventClick = (info) => {
     const event = info.event;
     const startDateTime = event.start.toISOString().slice(0, 16);
     const endDateTime = event.end.toISOString().slice(0, 16);
     setMeetingData({
       title: event.title,
+      requiredEmails: event.extendedProps.requiredEmails || "",
+      optionalEmails: event.extendedProps.optionalEmails || "",
       startDate: startDateTime.split("T")[0],
       startTime: startDateTime.split("T")[1],
       endDate: endDateTime.split("T")[0],
@@ -46,6 +59,8 @@ function Calendar() {
       endDate: initialDate,
       endTime: "09:00",
       location: "",
+      requiredEmails: "",
+      optionalEmails: "",
     });
     setTitleErr('');
     setModalMode("create");
@@ -74,17 +89,13 @@ function Calendar() {
       title:savedData.title,
       start: savedData.startDateTime,
       end: savedData.endDateTime,
+      requiredEmails:savedData.requiredEmails,
+      optionalEmails:savedData.optionalEmails
     };
     setEvents((event) => [...event,eventData]);
     setShowModal(false);
   };
-  const [events, setEvents] = useState([
-    {
-      title: "Srujana Meeting",
-      start: "2024-06-19T08:00:00",
-      end: "2024-06-19T09:00:00",
-    },
-  ]);
+  
   
   return (
     <div>
@@ -139,6 +150,28 @@ function Calendar() {
               <Form.Control.Feedback type="invalid">
                 {titleErr}
               </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group controlId="requiredEmails">
+              <Form.Label>Required</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Required Emails"
+                name="requiredEmails"
+                value={meetingData.requiredEmails}
+                onChange={handleInputChange}
+                readOnly={modalMode === "view"}
+              />
+            </Form.Group>
+            <Form.Group controlId="optionalEmails">
+              <Form.Label>Optional</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Optional Emails"
+                name="optionalEmails"
+                value={meetingData.optionalEmails}
+                onChange={handleInputChange}
+                readOnly={modalMode === "view"}
+              />
             </Form.Group>
             <Row>
               
